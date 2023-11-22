@@ -1,7 +1,18 @@
-<h1>Welcome, user!</h1>
-<h3>Total Points: 0</h3>
-<br>
-<button id="purchase">Purchase</button>
-<button id="addItems">Add Items</button>
-<button id="redeemItem">Redeem Item</button>
-<button id="inventory">Inventory</button>
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="main">
+    <h1>Welcome, user!</h1>
+    <h3>Total Points: 0</h3>
+    <br>
+    <button id="purchase">Purchase</button>
+    <a href="{% url 'main:create_product' %}">
+        <button id="addItems">Add Items</button>
+    </a>
+    <button id="redeemItem">Redeem Item</button>
+    <a href="{% url 'main:show_inventory' %}">
+        <button id="inventory">Inventory</button>
+    </a>
+</div>
+{% endblock content %}

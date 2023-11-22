@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<h1>Inventory</h1>
+<br>
+<a href="{% url 'main:show_products' %}">
+    <button id="products">Products</button>
+</a>
+<button id="photocards">Photocards</button>
+{% endblock content %}
