@@ -9,6 +9,16 @@
     <p>Price: {{product.price}}</p>
     <p>Amount: {{product.amount}}</p>
     <p>Description: {{product.description}}</p>
+    <a href="{% url 'main:edit_product' product.pk %}">
+        <button>
+            Edit
+        </button>
+    </a>
+    <a href="{% url 'main:delete_product' product.pk %}">
+        <button>
+            Delete
+        </button>
+    </a>
     <br>
 {% endfor %}
 {% endblock content %}
