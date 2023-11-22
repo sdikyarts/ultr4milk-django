@@ -6,5 +6,5 @@ class Product(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     price = models.IntegerField(default = None)
-    amount = models.IntegerField(default = None, null = True)
+    amount = models.IntegerField(default = None)
     description = models.TextField()
