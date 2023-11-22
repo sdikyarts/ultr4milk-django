@@ -4,7 +4,7 @@
 {% block content %}
 <div class="main">
     <h1>Welcome, user!</h1>
-    <h3>Total Points: 0</h3>
+    <h3 id="totalPoints">Total Points: 0</h3>
     <br>
     <button id="purchase">Purchase</button>
     <a href="{% url 'main:create_product' %}">

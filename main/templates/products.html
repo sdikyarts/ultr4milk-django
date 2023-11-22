@@ -1,24 +1,117 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
 <h1>Products</h1>
 <br>
-{% for product in products %}
-    <p>Name: {{product.name}}</p>
-    <p>Price: {{product.price}}</p>
-    <p>Amount: {{product.amount}}</p>
-    <p>Description: {{product.description}}</p>
-    <a href="{% url 'main:edit_product' product.pk %}">
-        <button>
-            Edit
-        </button>
-    </a>
-    <a href="{% url 'main:delete_product' product.pk %}">
-        <button>
-            Delete
-        </button>
-    </a>
-    <br>
-{% endfor %}
+<div id="products"></div>
+<br>
+<br>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Product by AJAX</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Add New Product</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form" onsubmit="return false;">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="name" class="col-form-label">Name:</label>
+                        <input type="text" class="form-control" id="name" name="name"></input>
+                    </div>
+                    <div class="mb-3">
+                        <label for="price" class="col-form-label">Price:</label>
+                        <input type="number" class="form-control" id="price" name="price"></input>
+                    </div>
+                    <div class="mb-3">
+                        <label for="amount" class="col-form-label">Amount:</label>
+                        <input type="number" class="form-control" id="amount" name="amount"></input>
+                    <div class="mb-4">
+                        <label for="description" class="col-form-label">Description:</label>
+                        <textarea class="form-control" id="description" name="description"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="button_add" data-bs-dismiss="modal">Add Product</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a href="{% url 'main:show_inventory' %}">
+    <button>
+        Back
+    </button>
+</a>
+<a href="{% url 'main:show_main' %}">
+    <button>
+        Home
+    </button>
+</a>
+
+<script>
+    async function getProducts() {
+        const response = await fetch("{% url 'main:get_product_json' %}");
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    }
+
+    async function refreshProducts() {
+        try {
+            const productsDiv = document.getElementById("products");
+            productsDiv.innerHTML = "";
+            const products = await getProducts();
+            products.forEach((product) => {
+                const productHtml = `
+                    <p>Name: ${product.fields.name}</p>
+                    <p>Price: ${product.fields.price}</p>
+                    <p>Amount: ${product.fields.amount}</p>
+                    <p>Description: ${product.fields.description}</p>
+                    <a href="/edit_product/${product.pk}">
+                        <button>Edit</button>
+                    </a>
+                    <a href="/delete_product/${product.pk}">
+                        <button>Delete</button>
+                    </a>
+                    <br>
+                `;
+                productsDiv.innerHTML += productHtml;
+            });
+        } catch (error) {
+            console.error('Failed to refresh products:', error);
+        }
+    }
+
+    refreshProducts();
+
+    function addProduct() {
+        fetch("{% url 'main:add_product_ajax' %}", {
+            method: "POST",
+            body: new FormData(document.querySelector('#form'))
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById("form").reset();
+            refreshProducts();
+        })
+        .catch(error => console.error('Error:', error));
+
+        return false;
+    }
+
+    document.getElementById("button_add").onclick = addProduct;
+</script>
 {% endblock content %}

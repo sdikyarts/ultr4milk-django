@@ -5,6 +5,6 @@ from django.contrib.auth.models import User
 class Product(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    price = models.IntegerField()
-    amount = models.IntegerField()
+    price = models.IntegerField(default = None)
+    amount = models.IntegerField(default = None, null = True)
     description = models.TextField()
